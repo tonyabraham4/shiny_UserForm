@@ -1,5 +1,3 @@
-
-
 outputDir <- "E:/01.r_projects/03.shiny/03.user_input_form/reponses"
 
 saveData <- function(data) {
@@ -60,4 +58,3 @@ shinyApp(
     })     
   }
 )
-
