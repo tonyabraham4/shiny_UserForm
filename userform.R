@@ -24,14 +24,21 @@ ui <- fluidPage(
       hr(),
       
       # Select variable for y-axis
-      selectInput(inputId = "qtr", 
+      selectInput(inputId = "list_qtr", 
                   label = "Select Quarter:",
                   choices = c("Q1", "Q2", "Q3", "Q4"), 
-                  selected = ""),
+                  selected = "Select Quarter"),
+      
+      # Enter text for Audit Name
+      textInput(inputId = "txt_project_name",
+                label = "Enter Project Name",
+                placeholder = "Enter Project Name to be added"),
+      
+      
       
       # Select variable for x-axis
-      selectInput(inputId = "x", 
-                  label = "X-axis:",
+      selectInput(inputId = "list_audit_name", 
+                  label = "Audit Name",
                   choices = c("IMDB rating" = "imdb_rating", 
                               "IMDB number of votes" = "imdb_num_votes", 
                               "Critics Score" = "critics_score", 
