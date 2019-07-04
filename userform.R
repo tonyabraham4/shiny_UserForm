@@ -2,8 +2,11 @@
 library(shiny)
 library(ggplot2)
 library(tools)
+library(readxl)
 
 # TODO define load() function to load previously saved data at startup.
+
+projects <- read_excel("E:/01.r_projects/03.shiny/03.user_input_form/project_tracker.xlsx")
 
 ui <- fluidPage(
   sidebarLayout(
@@ -11,12 +14,6 @@ ui <- fluidPage(
     # Input
     sidebarPanel(
       
-      # Enter text for plot title
-      textInput(inputId = "plot_title", 
-                label = "Plot title", 
-                placeholder = "Enter text to be used as plot title"),
-      
-
       # Select variable for Project quarter
       selectInput(inputId = "lst_qtr", 
                   label = "Select Quarter",
@@ -46,7 +43,7 @@ ui <- fluidPage(
                 label = "Select Dates",
                 #start = "2013-01-01",
                 #end = "2014-01-01",
-                #min = min_date, max = max_date,
+                #min = min_datfe, max = max_date,
                 startview = "year"),
       
       # Action button for plot title
@@ -61,15 +58,23 @@ ui <- fluidPage(
     
     # Output:
     mainPanel(
-      tableOutput(outputId = "datatable")
+      DT::dataTableOutput(outputId = "data_table")
     )
   )
 )
 
 
 # Server
-
+# TODO
 server <- function(input, output, session) {
+  df <- eventReactive(input$btn_submit, {
+    data.frame("Quarter" = input$lst_qtr,
+               "Project Name" = input$txt_project_name)
+  })
+  output$datatable <- DT::renderDataTable({
+    df()
+  })
+
   
   
 }
