@@ -67,13 +67,29 @@ ui <- fluidPage(
 # Server
 # TODO
 server <- function(input, output, session) {
+  
   df <- eventReactive(input$btn_submit, {
-    data.frame("Quarter" = input$lst_qtr,
-               "Project Name" = input$txt_project_name)
+    # projects <- projects
+    
+    projects_updated <- data.frame(Quarter = input$lst_qtr,
+                                   `Project Name` = input$txt_project_name,
+                                   `Project Manager Name` = input$txt_project_manager,
+                                   `Start Date` = input$dte_start_date,
+                                   `End Date` = input$dte_end_date)
+    
+   
+    
+    output$data_table <- DT::renderDataTable({
+      DT::datatable(data =projects(), 
+                    options = list(pageLength = 10), 
+                    rownames = FALSE)
+    })
+    
+    projects <- rbind(projects, projects_updated)
+   
   })
-  output$datatable <- DT::renderDataTable({
-    df()
-  })
+
+  
 
   
   
