@@ -6,7 +6,26 @@ library(readxl)
 
 # TODO define load() function to load previously saved data at startup.
 
-projects <- read_excel("E:/01.r_projects/03.shiny/03.user_input_form/project_tracker.xlsx")
+projects <- data.frame(read_excel("E:/01.r_projects/03.shiny/03.user_input_form/project_tracker.xlsx"))
+
+saveData <- function(data) {
+  data <- as.data.frame(t(data))
+  if (exists("responses")) {
+    responses <<- rbind(responses, data)
+  } else {
+    responses <<- data
+  }
+}
+
+loadData <- function() {
+  if (exists("responses")) {
+    responses
+  }
+}
+
+
+# UI 
+
 
 ui <- fluidPage(
   sidebarLayout(
@@ -68,32 +87,35 @@ ui <- fluidPage(
 # TODO
 server <- function(input, output, session) {
   
-  df <- eventReactive(input$btn_submit, {
-    # projects <- projects
+  
+  Data <- reactive({
     
-    projects_updated <- data.frame(Quarter = input$lst_qtr,
-                                   `Project Name` = input$txt_project_name,
-                                   `Project Manager Name` = input$txt_project_manager,
-                                   `Start Date` = input$dte_start_date,
-                                   `End Date` = input$dte_end_date)
-    
-   
-    
-    output$data_table <- DT::renderDataTable({
-      DT::datatable(data =projects(), 
-                    options = list(pageLength = 10), 
-                    rownames = FALSE)
+      df <- data.frame(Quarter = input$lst_qtr,
+                       Project.Name = input$txt_project_name,
+                       Project.Manager.Name = input$txt_project_manager,
+                       Start.Date = input$dte_start_date,
+                       End.Date = input$dte_end_date)
+        
+        
+        
     })
+  
+  output$data_table <- DT::renderDataTable(DT::datatable({
     
-    projects <- rbind(projects, projects_updated)
+    #Row bind the new data to be added to the table
+    projects <<- rbind(projects, Data()$df)
+    datum<-projects
+    
+    datum
+    
+    
+  }))
+  
+ 
+
    
-  })
+  }
 
-  
-
-  
-  
-}
 
 # Create a Shiny app object
 shinyApp(ui = ui, server = server)
